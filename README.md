@@ -1,7 +1,7 @@
 Cortex
 ======
 
-A multi-paradigm virtual machine-based experimental programming language
+An experimental multi-paradigm virtual machine-based programming language
 
 # Objective
 To build a language that combines everything
@@ -523,7 +523,7 @@ _Need an instruction for retrieving/accessing the address of variables_
                     1.1000b		= AX
                     0001.0010b	= 12h
                     0011.0100b	= 34h
-				
+
 ### Requirements
 
     MOV Q32,Q32
