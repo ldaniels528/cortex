@@ -1,0 +1,99 @@
+/**
+ * string class
+ * author: Lawrence Daniels
+ * date: 03/22/2010
+ */
+ class string {
+ 	char[] chars;
+ 	int capacity;
+ 	int len;
+ 
+ 	/**
+ 	 * Constructor
+ 	 */
+ 	public string() {
+ 		// do nothing
+ 	}
+ 
+  	/**
+ 	 * Constructor
+ 	 */
+ 	public string( int initialCapacity ) {
+ 		this.capacity 	= initialCapacity;
+ 		this.len		= 0;
+ 	}
+ 	
+ 	/**
+ 	 * Constructor
+ 	 */
+ 	public string( char[] chars ) {
+ 		this.chars		= chars; // header (first 4 bytes) denotes the length
+ 		this.len		= chars.length;
+ 		this.capacity 	= chars.length;
+ 	}
+ 	
+ 	 	/**
+ 	 * Reverses the string
+ 	 */
+ 	public string append( char[] chararray ) {
+ 		string temp = new string[ len + chararray.length ];
+ 		%%
+ 			// put the address of the temporary buffer into RAX
+ 			stage temp
+ 			pop rax
+ 		
+ 			/////////////////////////////////////////////////
+ 			//	First append the source characters to temp
+ 			/////////////////////////////////////////////////
+ 			 			
+ 			// put the character address on the stack
+ 			stage chars		
+ 			
+ 			// put the character length address on the stack
+ 			stage len;
+ 				
+ 			// copy the characters
+ 			copy byte rax
+ 			
+ 			 /////////////////////////////////////////////////
+ 			//	Next append the chararray to temp
+ 			/////////////////////////////////////////////////
+ 			
+ 			// put the character address on the stack
+ 			stage chararray		
+ 
+ 			// put the character length address on the stack
+ 			stage chararray.length;
+ 			
+ 			 // copy the characters
+ 			copy byte rax
+ 		%%
+ 		return temp;
+ 	}
+ 	
+ 	/**
+ 	 * Reverses the string
+ 	 */
+ 	public void flip() {
+ 		%%
+ 			// put the character address on the stack
+ 			stage chars 
+ 			
+ 			// put the character length address on the stack
+ 			stage len				
+ 			
+ 			// flip the characters		
+ 			flip byte
+ 		%%
+ 	}
+ 	
+ 	/**
+ 	 * Returns the length of the string
+ 	 */
+ 	public int length() {
+ 		return len;
+ 	}
+ 
+ 	
+ 
+ }

@@ -1,0 +1,163 @@
+/**
+ * Base class for all numeric types
+ */
+class number extends object {
+
+	/**
+	 * Constructor
+	 */	
+	number() { }
+	
+	/**
+	 * Destructor
+	 */
+	~number() { }
+	
+}
+
+/**
+ * Byte type
+ */
+class byte extends number {
+	
+	/**
+	 * Constructor
+	 */	
+	byte() : number() { }
+	
+	/**
+	 * Destructor
+	 */
+	~byte() { }
+	
+	byte min() {
+		return 0;
+	}
+	
+	byte max() {
+		return 255;
+	}
+}
+
+/**
+ * Character type
+ */
+class char extends number {
+	
+	/**
+	 * Constructor
+	 */	
+	char() : number() { }
+	
+	/**
+	 * Destructor
+	 */
+	~char() { }
+	
+	char min() {
+		return -128;
+	}
+	
+	char max() {
+		return 127;
+	}
+
+}
+
+/**
+ * Integer type
+ */
+class int extends number {
+
+	/**
+	 * Constructor
+	 */	
+	int() : number() { }
+	
+	/**
+	 * Destructor
+	 */
+	~int() { }
+	
+	int min() {
+		return -2147483648;
+	}
+	
+	int max() {
+		return 2147483647;
+	}
+}
+
+/**
+ * Unsigned Integer type
+ */
+class uint extends number {
+
+	/**
+	 * Constructor
+	 */	
+	uint() : number() { }
+	
+	/**
+	 * Destructor
+	 */
+	~uint() { }
+	
+	uint min() {
+		return 0;
+	}
+	
+	uint max() {
+		return 0xFFFFFFFF;
+	}
+}
+
+/**
+ * Short Integer type
+ */
+class short extends number {
+	
+	/**
+	 * Constructor
+	 */	
+	short() : number() { }
+	
+	/**
+	 * Destructor
+	 */
+	~short() { }
+	
+	short min() {
+		return -32768;
+	}
+	
+	short max() {
+		return 32767;
+	}
+
+}
+
+/**
+ * Unsigned Short Integer type
+ */
+class ushort extends number {
+	
+	/**
+	 * Constructor
+	 */	
+	ushort() : number() { }
+	
+	/**
+	 * Destructor
+	 */
+	~ushort() { }
+	
+	ushort min() {
+		return 0;
+	}
+	
+	ushort max() {
+		return 65535;
+	}
+
+}

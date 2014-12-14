@@ -1,0 +1,16 @@
+namespace Classes {
+
+	class Test4 {
+	
+		/**
+		 * Main method
+		 */
+		public static void main() {
+			final string data1 = "Hello World";	
+			%%
+				echo data1
+			%%
+		}
+	}
+
+}

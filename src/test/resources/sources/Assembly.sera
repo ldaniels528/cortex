@@ -1,0 +1,86 @@
+//import "Test4";
+
+namespace Assembly {
+
+	/**
+	 * Test class #1
+	 */
+	public final class Test1 {
+	
+		/**
+		 * Test the the "packaged" modifier
+		 */
+		final void testMe() {
+			%% 
+				mov cx,400
+				jmp @middle
+			@here	
+				mov dx,100
+				jmp @end
+			@middle
+				inc cx
+				jmp @here
+			@end
+				call @last
+				ret
+			@last
+				inc ex
+				dec fx
+				ret
+			%%
+		}
+	
+		/**
+		 * Jump testing
+		 */
+		public static final void main() {
+			testMe();
+			%% dump %%
+		}
+	}
+}
+
+/**
+ * Test class #2
+ */
+public class Test2 {
+
+	/**
+	 * Math & Stack testing
+	 */
+	public static void main() {
+		%% 
+			mov cx,400
+			mov dx,100
+			push cx
+			pop gx
+			mov ax,dx
+			sub cx,ax
+			dec cx
+			div ex,ex
+			flipflag:Z
+			dump
+		%%
+	}
+}
+
+/**
+ * Test class #3
+ */
+class Test3 {
+
+	/**
+	 * Data testing
+	 */
+	public static void main() {
+		final string data1 = "Hello World\n";	
+		final string data2 = "Goodbye World\n";
+		%% echo data1 %%
+		
+		// create an object
+		//Test2 test = new Test2();
+		//int x = ( 5 * 6 ) + ( 2 * 10 ) + 1;
+		int x = 5;
+	}
+
+}

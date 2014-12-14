@@ -1,0 +1,266 @@
+Juxtaposition Instruction Set (8 bits = 256 distinct ops)
+
+This document describes work-in-progress ideas for building the 
+assembly language component of Sucre.
+
+*******************************
+		Registers
+*******************************
+There are 32 registers available 16 64-bit general purpose registers (GP0 through GPF)
+and 8 32-bit general purpose registers (AX, BX, CX, DX, EX, FX, GX, and HX). There are also
+special registers: 4 counters (RC0-RC3), 8 positional (RP0-RP7)
+
+WIP #1: Perhaps set up multiple counters (e.g. RC1 - RC4), and allow the instruction 
+to indicate which counter is being used.  This will add greater flexibility when writing
+code that loops or moves data about. 
+
+WIP #2: Perhaps use 1 additional bit to represent 128 registers; 64 for the user
+and 64 for the system. This will help prevent issues when directly modifying 
+register values and flags. ** RESOLVED ** --> this will be handled via a register state object.
+
+WIP #3: Consider creating 8 floating point registers, and associated functions like
+sin(x), cos(x), etc.
+
+WIP #4: Consider creating 32 long integer registers (64-bit), which can be used as
+longs or doubles interchangeably. Associated functions like sin(x) and cos(x) could
+work at a system level.
+
+64 registers = 16 x 4 (INT,LONG,FLOAT,DOUBLE)
+
+INT		AX-HX (8), FL (9), RI9-RI16
+LONG	AY-HY (8), SP (9), RP (10),
+
+FLOAT	AA-HA 
+DOUBLE	AB-HB
+
+
+
+*******************************
+		Instruction Set
+*******************************
+Juxt uses fixed length instructions (32-bit) to promote parallelism and
+high speed decoding of the instructions. There are four types of instructions.
+
+WIP #1: Switch to 64-bit instructions in order to be able to directly access
+32-bit quantities: 
+Ex1: ADD RAX,1234ABCDh 			-> [op:8][rt:2][r0:6][msc:16][ofs:32] = 64-bits
+Ex2: MOV RAX,[R00+1234ABCDh]	-> [op:8][rt:2][r0:6][r1:6][msc:10][ofs:32] = 64-bits
+
+WIP #2: Consider limiting all offsets to references from memory locations.
+	
+WIP #3: Consider adding a bit that indicates that the next instruction depends on the current instruction.
+	
+---------------------------------------
+TYPE 0: System instructions
+---------------------------------------
+POPALL 
+HLT
+
+---------------------------------------
+TYPE 1: Math/Stack instructions
+---------------------------------------
+POP RAX
+INC RDX
+DEC BYTE[BX] 		-> qualifiers include BYTE/8, SWORD/16, WORD/32, DWORD/64
+
+COS [GP0]			-> Computes the cosine using the float value found at pointer GP0
+SIN FP0				-> Computes the sine using the double value found in FP0
+ABS GP1				-> Absolute value of the integer found in GP1
+
+---------------------------------------
+TYPE 2: Basic Data instructions
+---------------------------------------
+SUB AX,CX
+ADD BX,DX
+
+MOVADDR GP0,[0x7E]
+
+---------------------------------------
+TYPE 3: Flow instructions
+---------------------------------------
+CALL label
+JMP label
+LOOP label
+RET
+
+CALL:C label
+CALL:NC label
+CALL:DBZ label
+CALL:NDBZ label
+CALL:F label
+CALL:NF label
+CALL:HF label
+CALL:HB label
+CALL:G label
+CALL:NG label
+CALL:GE label
+CALL:NGE label
+CALL:L label
+CALL:NL label
+CALL:LE label
+CALL:NLE label
+CALL:O label
+CALL:NO label
+CALL:P label
+CALL:NP label
+CALL:S label
+CALL:NS label
+CALL:X label
+CALL:NX label
+CALL:Z label
+CALL:NZ label
+
+---------------------------------------
+TYPE 4: Massive Data instructions
+---------------------------------------
+COPY BYTE RC1 RP0:RP1 			-> Copies RC1 bytes (8-bit quantity) from RP0 to RP1 
+SORT LONG RC2 RP3:RP4			-> Sorts a memory array of longs (64-bit quantity) from RP3 to RP4
+
+FILL BYTE GP0 RP1:RP2			-> Fills the memory from RP1 to RP2 with the byte (8-bit quantity) found in GP0
+SCAN WORD GP1 RP2:RP3 	 		-> Scans the memory from RP2 to RP3 for the word (16-bit quantity) found in GP1
+
+
+MAP?
+
+
+---------------------------------------
+TYPE 5: Data instructions
+---------------------------------------
+STAGEPARMS <address>
+
+ECHO "Hello World" 
+
+INVOKE "main()"
+
+LOADCLASS "sera.util.LinkedList"
+
+// data1 = "Hello World"
+STAGE "Hello World"
+SETPTR data1
+
+// data2 = data1
+STAGE data1
+SETPTR data2
+
+---------------------------------------
+Instruction Layout
+---------------------------------------
+
+Layout 1: [op:8][rt:2][r0:5][r1:5][dq:2][msc:2][ofs:8]	= 32-bits -> MOV RAX,RCX | MOV RAX,[RBX+n8]
+Layout 2: [op:8][rt:2][r0:5][r1:5][dq:2][r2:5][msc:5]	= 32-bits -> SCAN BYTE [RAX] RCX RDX
+
+Thinking out loud
+-----------------
+Layout 3: [op:8|dq:2|r0:5|msc:1|ofs:16]	= 32-bits -> MOV RAX,[n16]
+
+Experiment 1: [op:8|dq:2|msc:22][10]				= 32-bits -> LOAD [n32] *requires 2 extra bytes
+Experiment 2: [op:8|dq:2|msc:22][42]				= 32-bits -> LOAD [n64] *requires 6 extra bytes
+
+Experiment 3: [op:8|dq:2|r0:5|msc:1|ofs:16]	= 32-bits -> MOV RAX,[n64]
+Experiment 4: [op:8|dq:2|r0:5|msc:1|ofs:16]	= 32-bits -> MOV RAX,[n64]
+
+Experiment 5: [op:8|dq:2|r0:5|msc:1|ofs:16]	= 32-bits -> MOV RAX,[n64]
+
+[op:8][ref1:2][ref2:2]        [dq:2][reg1:5][*:13]	- [q32]				= MOV ,RAX
+[op:8][ref1:2][ref2:2]        [dq:2][reg1:5][*:13]	- [q32]				= MOV LONG [1000],RAX
+[op:8][ref1:2][ref2:2]        [dq:2][*:18] 			- [q32][q32]		= MOV LONG [1000],0
+[op:8][ref1:2][ref2:2]        [dq:2][*:18] 			- [q32][q08]		= MOV BYTE [1000],0
+[op:8][ref1:2][ref2:2][ref3:2][dq:2][*:16] 			- [q32][q32][q32]	= SCAN BYTE [1000] 0000:FFFF
+
+
+
+*Need an instruction for retrieving/accessing the address of variables
+
+
+Layout: [op:8][rt:2][r0:6][r1:6][msc:2][ofs:8] = 32-bits
+
+ MOV AX,DX = 0x0538EC00
+				0000.0101b 	= MOV
+				00b 		= A and B are registers
+				11.1000b	= AX
+				11.1011b	= DX
+				0000.0000	= 00h
+ 				
+Layout: [op:8][rt:2][r0:5][r1:5][msc:4][ofs:8] = 32-bits
+
+ SUB AX,[BX+AA] = 0x017AE0AA
+				0000.0001b 	= SUB
+				01b 		= A is a register, B is a memory reference
+				11.1010b	= CX
+				11.1000b	= AX
+				1010.1010	= AAh
+ 				
+ Layout: [op:8][rt:2][r0:5][msc:1][ofs:16] = 32-bits				
+
+ ADD AX,1234 = 0x00F81234
+				0000.0000b 	= ADD
+				11b 		= A is a register, B is a 16-bit value
+				1.1000b		= AX
+	 			0001.0010b	= 12h
+	 			0011.0100b	= 34h
+				
+*******************************
+		Assignment
+*******************************
+
+
+
+
+
+
+
+
+
+
+*******************************
+		Requirements
+*******************************
+
+MOV Q32,Q32
+MOV Q64,Q64
+CMP Q32,Q32
+CMP Q64,Q64
+XCHG Q32,Q32
+XCHG Q64,Q64
+
+
+
+*******************************
+		Arrays
+*******************************
+
+Array objects have a header that is the length of the array, 
+
+Thus "char[] data = new char[128]" looks like:
+
+[header:32=128][..(128 bytes of data)...]
+
+So the actual "address" of an array is &data + 4.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
