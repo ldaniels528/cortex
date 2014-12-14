@@ -12,7 +12,7 @@
 //		Constants
 ////////////////////////////////////////////////////////////
 
-#define APP_NAME		"Sera"
+#define APP_NAME		"Cortex"
 #define RELEASE			"Monaco"
 
 #define MAJOR_VERSION	0

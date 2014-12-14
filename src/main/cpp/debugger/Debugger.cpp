@@ -39,7 +39,7 @@ int Debugger::debug( const char* classname, int argc, char* args[] ) {
 	char* command = new char[MAX_SIZE];
 
 	// print the version #
-	printf( "Sera Compiler/Runtime (%s) v%d.%02d\n"
+	printf( "Cortex Compiler/Runtime (%s) v%d.%02d\n"
 			"Lawrence L. Daniels (lawrence.daniels@gmail.com)\n"
 			"Copyright (C) Feb 28, 2010\n"
 			"All rights reserved\n\n",

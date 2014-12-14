@@ -22,7 +22,7 @@
 using namespace std;
 
 /**
- * Sera Virtual Machine (SVM)
+ * Cortex Virtual Machine (SVM)
  */
 class VirtualMachine {
 private:
