@@ -16,7 +16,7 @@ and Aspect-Oriented Programming (AOP).
 Syntactic sugar, and maximizing performance and flexibility
 
 # Features
-* 64-bit?
+* 32-bit
 * Multiple Inheritance
 * Metadata (Annotations)
 * Operator Overloading
